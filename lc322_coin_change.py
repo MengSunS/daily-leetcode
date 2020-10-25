@@ -8,8 +8,7 @@ class Solution:
         # write your code here
         f= [sys.maxsize]*(amount+1)
         f[0]= 0
-        
-        
+  
         for coin in coins:
             for i in range(1, amount+1):
                 if coin< amount:
