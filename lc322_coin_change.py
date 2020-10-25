@@ -9,8 +9,9 @@ class Solution:
         f= [sys.maxsize]*(amount+1)
         f[0]= 0
         
-        for i in range(1, amount+1):
-            for coin in coins:
+        
+        for coin in coins:
+            for i in range(1, amount+1):
                 if coin< amount:
                     f[i]= min(f[i], f[i-coin]+1)
         
