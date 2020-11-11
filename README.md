@@ -164,64 +164,69 @@ support multiple versions with minimal changes.
 | `transportPort`                    | The transport port that Kubernetes will use for the service. If you change this you will also need to set [transport port configuration][] in `extraEnvs`                                                                                                 | `9300`                                          |
 | `updateStrategy`                   | The [updateStrategy][] for the StatefulSet. By default Kubernetes will wait for the cluster to be green after upgrading each pod. Setting this to `OnDelete` will allow you to manually delete each pod during upgrades                                   | `RollingUpdate`                                 |
 | `volumeClaimTemplate`              | Configuration for the [volumeClaimTemplate for StatefulSets][]. You will want to adjust the storage (default `30Gi` ) and the `storageClassName` if you are using a different storage class                                                               | see [values.yaml][]                             |
-`replicaCount` | desired number of pods | `1`
-`restartPolicy` | container restart policy | `Always`
-`image.repository` | container image repository | `justwatch/elasticsearch_exporter`
-`image.tag` | container image tag | `1.1.0`
-`image.pullPolicy` | container image pull policy | `IfNotPresent`
-`image.pullSecret` | container image pull secret | `""`
-`resources` | resource requests & limits | `{}`
-`priorityClassName` | priorityClassName | `nil`
-`nodeSelector` | Node labels for pod assignment | `{}`
-`tolerations` | Node tolerations for pod assignment | `{}`
-`podAnnotations` | Pod annotations | `{}` |
-`podSecurityPolicies.enabled` | Enable/disable PodSecurityPolicy and associated Role/Rolebinding creation | `false`
-`serviceAccount.create` | Create a ServiceAccount for the pod | `false`
-`serviceAccount.name` | Name of a ServiceAccount to use that is not handled by this chart | `default`
-`service.type` | type of service to create | `ClusterIP`
-`service.httpPort` | port for the http service | `9108`
-`service.metricsPort.name` | name for the http service | `http`
-`service.annotations` | Annotations on the http service | `{}`
-`service.labels` | Additional labels for the service definition | `{}`
-`env` | Extra environment variables passed to pod | `{}`
-`extraEnvSecrets` | Extra environment variables passed to the pod from k8s secrets - see `values.yaml` for an example | `{}` |
-`envFromSecret` | The name of an existing secret in the same kubernetes namespace which contains values to be added to the environment | `nil`
-`secretMounts` |  list of secrets and their paths to mount inside the pod | `[]`
-`affinity` | Affinity rules | `{}`
-`es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
-`es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
-`es.indices` | if true, query stats for all indices in the cluster | `true`
-`es.indices_settings` | if true, query settings stats for all indices in the cluster | `true`
-`es.shards` | if true, query stats for shards in the cluster | `true`
-`es.cluster_settings` | if true, query stats for cluster settings | `true`
-`es.snapshots` | if true, query stats for snapshots in the cluster | `true`
-`es.timeout` | timeout for trying to get stats from Elasticsearch | `30s`
-`es.ssl.enabled` | If true, a secure connection to Elasticsearch cluster is used | `false`
-`es.ssl.useExistingSecrets` | If true, certs from secretMounts will be used | `false`
-`es.ssl.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
-`es.ssl.ca.path` | Path of ca pem file which should match a secretMount path |
-`es.ssl.client.enabled` | If true, use SSL client certificates for authentication | `true`
-`es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
-`es.ssl.client.pemPath` | Path of client pem file which should match a secretMount path |
-`es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
-`es.ssl.client.keyPath` | Path of client key file which should match a secretMount path |
-`web.path` | path under which to expose metrics | `/metrics`
-`serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
-`serviceMonitor.namespace` | If set, the ServiceMonitor will be installed in a different namespace  | `""`
-`serviceMonitor.labels` | Labels for prometheus operator | `{}`
-`serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
-`serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
-`serviceMonitor.scheme` | Scheme to use for scraping | `http`
-`serviceMonitor.relabelings` | Relabel configuration for the metrics | `[]`
-`serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]`
-`serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion. | `[]`
-`serviceMonitor.sampleLimit` | Number of samples that will fail the scrape if exceeded | `0`
-`prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
-`prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""`
-`prometheusRule.labels` | Labels for prometheus operator | `{}`
-`prometheusRule.rules` | List of [PrometheusRules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example. | `[]`
-`log.format` | Format used for the logs. Valid formats are `json` and `logfmt` | `logfmt`
-`log.level` | Logging level to be used. Valid levels are `debug`, `info`, `warn`, `error` | `info`
+`metrics.enabled` | enable Prometheus | `false`
+`metrics.name` | exporter name | `exporter`
+`metrics.restartPolicy` | restart policy | `Always`
+`metrics.image.repository` | container image repository | `justwatch/elasticsearch_exporter`
+`metrics.image.tag` | container image tag | `1.1.0`
+`metrics.image.pullPolicy` | container image pull policy | `IfNotPresent`
+`metrics.image.pullSecret` | container image pull secret | `""`
+`metrics.resources` | resource requests & limits | `{}`
+
+
+`metrics.priorityClassName` | priorityClassName | `nil`
+`metrics.nodeSelector` | Node labels for pod assignment | `{}`
+`metrics.tolerations` | Node tolerations for pod assignment | `{}`
+`metrics.podAnnotations` | Pod annotations | `{}` |
+`metrics.podSecurityPolicies.enabled` | Enable/disable PodSecurityPolicy and associated Role/Rolebinding creation | `false`
+`metrics.serviceAccount.create` | Create a ServiceAccount for the pod | `false`
+`metrics.serviceAccount.name` | Name of a ServiceAccount to use that is not handled by this chart | `default`
+
+
+`metrics.service.type` | type of service to create | `ClusterIP`
+`metrics.service.httpPort` | port for the http service | `9108`
+`metrics.service.metricsPort.name` | name for the http service | `http`
+`metrics.service.annotations` | Annotations on the http service | `{}`
+`metrics.service.labels` | Additional labels for the service definition | `{}`
+`metrics.env` | Extra environment variables passed to pod | `{}`
+`metrics.envFromSecret` | The name of an existing secret in the same kubernetes namespace which contains values to be added to the environment | `nil`
+`metrics.extraEnvSecrets` | Extra environment variables passed to the pod from k8s secrets - see `values.yaml` for an example | `{}` |
+`metrics.secretMounts` |  list of secrets and their paths to mount inside the pod | `[]`
+`metrics.affinity` | Affinity rules | `{}`
+`metrics.es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
+`metrics.es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true` |
+`metrics.es.indices` | if true, query stats for all indices in the cluster | `true`
+`metrics.es.indices_settings` | if true, query settings stats for all indices in the cluster | `true`
+`metrics.es.shards` | if true, query stats for shards in the cluster | `true`
+`metrics.es.cluster_settings` | if true, query stats for cluster settings | `true`
+`metrics.es.snapshots` | if true, query stats for snapshots in the cluster | `true`
+`metrics.es.timeout` | timeout for trying to get stats from Elasticsearch | `30s`
+`metrics.es.ssl.enabled` | If true, a secure connection to Elasticsearch cluster is used | `false`
+`metrics.es.ssl.useExistingSecrets` | If true, certs from secretMounts will be used | `false`
+`metrics.es.ssl.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
+`metrics.es.ssl.ca.path` | Path of ca pem file which should match a secretMount path |
+`metrics.es.ssl.client.enabled` | If true, use SSL client certificates for authentication | `true`
+`metrics.es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
+`metrics.es.ssl.client.pemPath` | Path of client pem file which should match a secretMount path |
+`metrics.es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
+`metrics.es.ssl.client.keyPath` | Path of client key file which should match a secretMount path |
+`metrics.web.path` | path under which to expose metrics | `/metrics`
+`metrics.serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
+`metrics.serviceMonitor.namespace` | If set, the ServiceMonitor will be installed in a different namespace  | `""`
+`metrics.serviceMonitor.labels` | Labels for prometheus operator | `{}`
+`metrics.serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
+`metrics.serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
+`metrics.serviceMonitor.scheme` | Scheme to use for scraping | `http`
+`metrics.serviceMonitor.relabelings` | Relabel configuration for the metrics | `[]`
+`metrics.serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]` |
+`metrics.serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion. | `[]`
+`metrics.serviceMonitor.sampleLimit` | Number of samples that will fail the scrape if exceeded | `0`
+`metrics.prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
+`metrics.prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""` |
+`metrics.prometheusRule.labels` | Labels for prometheus operator | `{}`
+`metrics.prometheusRule.rules` | List of [PrometheusRules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example. | `[]` |
+`metrics.log.format` | Format used for the logs. Valid formats are `json` and `logfmt` | `logfmt`
+`metrics.log.level` | Logging level to be used. Valid levels are `debug`, `info`, `warn`, `error` | `info`
 
 ### Deprecated
 
