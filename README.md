@@ -167,11 +167,11 @@ support multiple versions with minimal changes.
 `metrics.enabled` | enable Prometheus | `false`
 `metrics.name` | exporter name | `exporter`
 `metrics.restartPolicy` | restart policy | `Always`
-`metrics.image.repository` | container image repository | `justwatch/elasticsearch_exporter`
+`metrics.image.repository` | container image repository |  see [values.yaml][]
 `metrics.image.tag` | container image tag | `1.1.0`
 `metrics.image.pullPolicy` | container image pull policy | `IfNotPresent`
 `metrics.image.pullSecret` | container image pull secret | `""`
-`metrics.resources` | resource requests & limits | `{}`
+`metrics.resources` | resource requests & limits | see [values.yaml][]
 `metrics.priorityClassName` | priorityClassName | `nil`
 `metrics.nodeSelector` | Node labels for pod assignment | `{}`
 `metrics.tolerations` | Node tolerations for pod assignment | `{}`
@@ -189,7 +189,7 @@ support multiple versions with minimal changes.
 `metrics.extraEnvSecrets` | Extra environment variables passed to the pod from k8s secrets - see `values.yaml` for an example | `{}` |
 `metrics.secretMounts` |  list of secrets and their paths to mount inside the pod | `[]`
 `metrics.affinity` | Affinity rules | `{}`
-`metrics.es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
+`metrics.es.uri` | address of the Elasticsearch node to connect to | `http://elasticsearch-master.logging:9200`
 `metrics.es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true` |
 `metrics.es.indices` | if true, query stats for all indices in the cluster | `true`
 `metrics.es.indices_settings` | if true, query settings stats for all indices in the cluster | `true`
