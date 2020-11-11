@@ -172,8 +172,6 @@ support multiple versions with minimal changes.
 `metrics.image.pullPolicy` | container image pull policy | `IfNotPresent`
 `metrics.image.pullSecret` | container image pull secret | `""`
 `metrics.resources` | resource requests & limits | `{}`
-
-
 `metrics.priorityClassName` | priorityClassName | `nil`
 `metrics.nodeSelector` | Node labels for pod assignment | `{}`
 `metrics.tolerations` | Node tolerations for pod assignment | `{}`
@@ -181,8 +179,6 @@ support multiple versions with minimal changes.
 `metrics.podSecurityPolicies.enabled` | Enable/disable PodSecurityPolicy and associated Role/Rolebinding creation | `false`
 `metrics.serviceAccount.create` | Create a ServiceAccount for the pod | `false`
 `metrics.serviceAccount.name` | Name of a ServiceAccount to use that is not handled by this chart | `default`
-
-
 `metrics.service.type` | type of service to create | `ClusterIP`
 `metrics.service.httpPort` | port for the http service | `9108`
 `metrics.service.metricsPort.name` | name for the http service | `http`
