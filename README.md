@@ -11,7 +11,10 @@ This Helm chart is a lightweight way to configure and run our official
 
 - [Requirements](#requirements)
 - [Installing](#installing)
-  - [Install released version using Helm repository](#install-released-version-using-helm-repository)
+  - [Download helm charts](#download-helm-charts)
+  - [Install elasticsearch helm charts](#install-elasticsearch-helm-charts)
+  - [Installed components](#installed-components)
+  - [Uninstalling the chart](#uninstalling-the-chart)
 - [Upgrading](#upgrading)
 - [Usage notes](#usage-notes)
 - [Configuration](#configuration)
@@ -30,7 +33,7 @@ This Helm chart is a lightweight way to configure and run our official
     - [Custom paths and keys](#custom-paths-and-keys)
   - [How to enable snapshotting?](#how-to-enable-snapshotting)
   - [How to configure templates post-deployment?](#how-to-configure-templates-post-deployment)
-- [Contributing](#contributing)
+- [Notes](#notes)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 <!-- Use this to update TOC: -->
@@ -52,16 +55,68 @@ See [supported configurations][] for more details.
 
 This chart is tested with the latest 7.9.2 version.
 
-### Install released version using Helm repository
+### Download helm charts
 
-* Add the Elastic Helm charts repo:
-`helm repo add elastic https://helm.elastic.co`
+```console
+$ helm repo add atom-helm https://svl-artifactory.juniper.net/atom-helm
+$ helm repo update
+$ helm fetch atom-helm/elasticsearch --version=1.0.1-g34a44d5557
+```
+### Install elasticsearch helm charts
 
-* Install it:
-  - with Helm 2: `helm install --name elasticsearch --version 7.9.2 elastic/elasticsearch`
-  - with [Helm 3 (beta)][]: `helm install elasticsearch --version 7.9.2 elastic/elasticsearch`
+```console
+helm install atom-helm/elasticsearch --version=1.0.1-g34a44d5557 --namespace logging -n elasticsearch
+```
 
+You can specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
+Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
+
+```console
+helm install --name elasticsearch -f my-values.yaml atom-helm/elasticsearch
+```
+
+> **Tip**: A default [values.yaml](values.yaml) is provided
+
+### Installed components
+
+You can use `kubectl get all -n logging` to view all of the installed components.
+
+For example:
+
+```console
+
+helm install atom-helm/elasticsearch --version=1.0.1-g34a44d5557 --namespace logging -n elasticsearch --set replicas=1
+
+NAME:   elasticsearch
+LAST DEPLOYED: Tue Nov 10 14:24:19 2020
+NAMESPACE: logging
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/Pod(related)
+NAME                    READY  STATUS   RESTARTS  AGE
+elasticsearch-master-0  1/1    Running  0         0s
+
+==> v1/Service
+NAME                           TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)            AGE
+elasticsearch-master           ClusterIP  10.109.237.15  <none>       9200/TCP,9300/TCP  0s
+elasticsearch-master-headless  ClusterIP  None           <none>       9200/TCP,9300/TCP  0s
+
+==> v1/StatefulSet
+NAME                  READY  AGE
+elasticsearch-master  1/1    0s
+
+==> v1beta1/PodDisruptionBudget
+NAME                      MIN AVAILABLE  MAX UNAVAILABLE  ALLOWED DISRUPTIONS  AGE
+elasticsearch-master-pdb  N/A            1                0                    1s
+
+```
+### Uninstalling the chart
+
+```console
+$ helm delete elasticsearch --purge
+```
 ## Upgrading
 
 Please always check [CHANGELOG.md][] and [BREAKING_CHANGES.md][] before
@@ -164,65 +219,67 @@ support multiple versions with minimal changes.
 | `transportPort`                    | The transport port that Kubernetes will use for the service. If you change this you will also need to set [transport port configuration][] in `extraEnvs`                                                                                                 | `9300`                                          |
 | `updateStrategy`                   | The [updateStrategy][] for the StatefulSet. By default Kubernetes will wait for the cluster to be green after upgrading each pod. Setting this to `OnDelete` will allow you to manually delete each pod during upgrades                                   | `RollingUpdate`                                 |
 | `volumeClaimTemplate`              | Configuration for the [volumeClaimTemplate for StatefulSets][]. You will want to adjust the storage (default `30Gi` ) and the `storageClassName` if you are using a different storage class                                                               | see [values.yaml][]                             |
-`metrics.enabled` | enable Prometheus | `false`
-`metrics.name` | exporter name | `exporter`
-`metrics.restartPolicy` | restart policy | `Always`
-`metrics.image.repository` | container image repository |  see [values.yaml][]
-`metrics.image.tag` | container image tag | `1.1.0`
-`metrics.image.pullPolicy` | container image pull policy | `IfNotPresent`
-`metrics.image.pullSecret` | container image pull secret | `""`
-`metrics.resources` | resource requests & limits | see [values.yaml][]
-`metrics.priorityClassName` | priorityClassName | `nil`
-`metrics.nodeSelector` | Node labels for pod assignment | `{}`
-`metrics.tolerations` | Node tolerations for pod assignment | `{}`
-`metrics.podAnnotations` | Pod annotations | `{}` |
-`metrics.podSecurityPolicies.enabled` | Enable/disable PodSecurityPolicy and associated Role/Rolebinding creation | `false`
-`metrics.serviceAccount.create` | Create a ServiceAccount for the pod | `false`
-`metrics.serviceAccount.name` | Name of a ServiceAccount to use that is not handled by this chart | `default`
-`metrics.service.type` | type of service to create | `ClusterIP`
-`metrics.service.httpPort` | port for the http service | `9108`
-`metrics.service.metricsPort.name` | name for the http service | `http`
-`metrics.service.annotations` | Annotations on the http service | `{}`
-`metrics.service.labels` | Additional labels for the service definition | `{}`
-`metrics.env` | Extra environment variables passed to pod | `{}`
-`metrics.envFromSecret` | The name of an existing secret in the same kubernetes namespace which contains values to be added to the environment | `nil`
-`metrics.extraEnvSecrets` | Extra environment variables passed to the pod from k8s secrets - see `values.yaml` for an example | `{}` |
-`metrics.secretMounts` |  list of secrets and their paths to mount inside the pod | `[]`
-`metrics.affinity` | Affinity rules | `{}`
-`metrics.es.uri` | address of the Elasticsearch node to connect to | `http://elasticsearch-master.logging:9200`
-`metrics.es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true` |
-`metrics.es.indices` | if true, query stats for all indices in the cluster | `true`
-`metrics.es.indices_settings` | if true, query settings stats for all indices in the cluster | `true`
-`metrics.es.shards` | if true, query stats for shards in the cluster | `true`
-`metrics.es.cluster_settings` | if true, query stats for cluster settings | `true`
-`metrics.es.snapshots` | if true, query stats for snapshots in the cluster | `true`
-`metrics.es.timeout` | timeout for trying to get stats from Elasticsearch | `30s`
-`metrics.es.ssl.enabled` | If true, a secure connection to Elasticsearch cluster is used | `false`
-`metrics.es.ssl.useExistingSecrets` | If true, certs from secretMounts will be used | `false`
-`metrics.es.ssl.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
-`metrics.es.ssl.ca.path` | Path of ca pem file which should match a secretMount path |
-`metrics.es.ssl.client.enabled` | If true, use SSL client certificates for authentication | `true`
-`metrics.es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
-`metrics.es.ssl.client.pemPath` | Path of client pem file which should match a secretMount path |
-`metrics.es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
-`metrics.es.ssl.client.keyPath` | Path of client key file which should match a secretMount path |
-`metrics.web.path` | path under which to expose metrics | `/metrics`
-`metrics.serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
-`metrics.serviceMonitor.namespace` | If set, the ServiceMonitor will be installed in a different namespace  | `""`
-`metrics.serviceMonitor.labels` | Labels for prometheus operator | `{}`
-`metrics.serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
-`metrics.serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
-`metrics.serviceMonitor.scheme` | Scheme to use for scraping | `http`
-`metrics.serviceMonitor.relabelings` | Relabel configuration for the metrics | `[]`
-`metrics.serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]` |
-`metrics.serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion. | `[]`
-`metrics.serviceMonitor.sampleLimit` | Number of samples that will fail the scrape if exceeded | `0`
-`metrics.prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
-`metrics.prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""` |
-`metrics.prometheusRule.labels` | Labels for prometheus operator | `{}`
-`metrics.prometheusRule.rules` | List of [PrometheusRules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example. | `[]` |
-`metrics.log.format` | Format used for the logs. Valid formats are `json` and `logfmt` | `logfmt`
-`metrics.log.level` | Logging level to be used. Valid levels are `debug`, `info`, `warn`, `error` | `info`
+| `metrics.enabled`                  		| enable Prometheus                                                                                                                                                   										 | `false`					   |
+| `metrics.name`                     		| exporter name 																												 | `exporter`    				   |
+| `metrics.replicas` 		     		| Kubernetes replica count for the exporter deployments 																							 | `1`						   |
+| `metrics.affinity` 		     		| Setting this to hard enforces the [affinity][] rules. If it is set to soft it will be done "best effort". Other values will be ignored    													 | `hard`					   |
+| `metrics.restartPolicy` 	     		| restart policy 																												 | `Always`					   |
+| `metrics.image.repository` 	     		| container image repository 																											 |  see [values.yaml][]				   |
+| `metrics.image.tag` 	             		| container image tag 																												 | `1.1.0`					   |
+| `metrics.image.pullPolicy` 	     		| container image pull policy 																											 | `IfNotPresent`				   |
+| `metrics.image.pullSecret` 	     		| container image pull secret 																											 | `""`  					   |
+| `metrics.log.format` 		     		| Format used for the logs. Valid formats are `json` and `logfmt` 																						 | `logfmt`					   |
+| `metrics.log.level` 		     		| Logging level to be used. Valid levels are `debug`, `info`, `warn`, `error` 																					 | `info`					   |
+| `metrics.resources` 		     		| resource requests & limits 																											 | see [values.yaml][]				   |
+| `metrics.priorityClassName` 	     		| priorityClassName 																												 | `nil`					   |
+| `metrics.nodeSelector` 	     		| Node labels for pod assignment 																										 | `{}`						   |
+| `metrics.tolerations` 	     		| Node tolerations for pod assignment 																										 | `{}`						   |
+| `metrics.podAnnotations` 	     		| Pod annotations 																												 | `{}` 					   |
+| `metrics.service.type` 	     		| type of service to create 																											 | `ClusterIP`					   |
+| `metrics.service.httpPort` 	     		| port for the http service 																											 | `9108`					   |
+| `metrics.service.metricsPort.name` 		| name for the http service 																											 | `http`					   |
+| `metrics.service.annotations`      		| Annotations on the http service 																										 | `{}`						   |
+| `metrics.service.labels` 	     		| Additional labels for the service definition 																									 | `{}`						   |
+| `metrics.env` 	             		| Extra environment variables passed to pod 																								         | `{}`						   |
+| `metrics.envFromSecret` 	     		| The name of an existing secret in the same kubernetes namespace which contains values to be added to the environment 															         | `nil`					   |
+| `metrics.extraEnvSecrets` 	     		| Extra environment variables passed to the pod from k8s secrets - see `values.yaml` for an example 																		 | `{}` 					   |
+| `metrics.secretMounts` 	     		|  list of secrets and their paths to mount inside the pod 																						         | `[]`						   |
+| `metrics.es.uri` 	             		| address of the Elasticsearch node to connect to 																								 | `http://elasticsearch-master.logging:9200`      |
+| `metrics.es.all` 	             		| if `true`, query stats for all nodes in the cluster, rather than just the node we connect to 																			 | `true` 				           |
+| `metrics.es.indices` 		     		| if true, query stats for all indices in the cluster 																								 | `true`					   |
+| `metrics.es.indices_settings`      		| if true, query settings stats for all indices in the cluster 																							 | `true`					   |
+| `metrics.es.shards` 		     		| if true, query stats for shards in the cluster 																								 | `true`					   |
+| `metrics.es.cluster_settings`      		| if true, query stats for cluster settings 																									 | `false`					   |
+| `metrics.es.snapshots` 	     		| if true, query stats for snapshots in the cluster 																								 | `true`					   |
+| `metrics.es.timeout` 	  	     		| timeout for trying to get stats from Elasticsearch 																								 | `30s`					   |
+| `metrics.es.ssl.enabled` 	     		| If true, a secure connection to Elasticsearch cluster is used 																						 | `false`					   |
+| `metrics.es.ssl.useExistingSecrets`		| If true, certs from secretMounts will be used 																								 | `false`					   |
+| `metrics.es.ssl.ca.pem` 	     		| PEM that contains trusted CAs used for setting up secure Elasticsearch connection 																				 |						   |
+| `metrics.es.ssl.ca.path` 	     		| Path of ca pem file which should match a secretMount path 																							 |						   |
+| `metrics.es.ssl.client.enabled`    		| If true, use SSL client certificates for authentication 																							 | `true`					   |
+| `metrics.es.ssl.client.pem` 	     		| PEM that contains the client cert to connect to Elasticsearch 																						 |						   |
+| `metrics.es.ssl.client.pemPath`    		| Path of client pem file which should match a secretMount path 																						 |						   |
+| `metrics.es.ssl.client.key` 	     		| Private key for client auth when connecting to Elasticsearch 																							 |						   |
+| `metrics.es.ssl.client.keyPath`   		| Path of client key file which should match a secretMount path 																						 |						   |
+| `metrics.web.path` 		    		| path under which to expose metrics 																										 | `/metrics`					   |
+| `metrics.serviceMonitor.enabled`  		| If true, a ServiceMonitor CRD is created for a prometheus operator 																						 | `false`					   |
+| `metrics.serviceMonitor.namespace` 		| If set, the ServiceMonitor will be installed in a different namespace  																					 | `""`						   |
+| `metrics.serviceMonitor.labels`    		| Labels for prometheus operator 																										 | `{}`						   |
+| `metrics.serviceMonitor.interval`  		| Interval at which metrics should be scraped 																									 | `10s`					   |
+| `metrics.serviceMonitor.scrapeTimeout`  	| Timeout after which the scrape is ended 																									 | `10s`					   |
+| `metrics.serviceMonitor.scheme`    		| Scheme to use for scraping 																											 | `http`					   |
+| `metrics.serviceMonitor.relabelings` 		| Relabel configuration for the metrics 																									 | `[]`						   |
+| `metrics.serviceMonitor.targetLabels` 	| Set of labels to transfer on the Kubernetes Service onto the target. 																						 | `[]` 					   |
+| `metrics.serviceMonitor.metricRelabelings`	| MetricRelabelConfigs to apply to samples before ingestion. 																							 | `[]`						   |
+| `metrics.serviceMonitor.sampleLimit` 		| Number of samples that will fail the scrape if exceeded 																							 | `0`						   |
+| `metrics.prometheusRule.enabled` 		| If true, a PrometheusRule CRD is created for a prometheus operator 																						 | `false`					   |
+| `metrics.prometheusRule.namespace` 		| If set, the PrometheusRule will be installed in a different namespace  																					 | `""` 					   |
+| `metrics.prometheusRule.labels` 		| Labels for prometheus operator 																										 | `{}`						   |
+| `metrics.prometheusRule.rules` 		| List of [PrometheusRules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example. 												 | `[]` 					   |
+| `metrics.serviceAccount.create` 		| Create a ServiceAccount for the pod | `false`
+| `metrics.serviceAccount.name` 		| Name of a ServiceAccount to use that is not handled by this chart | `default`
+| `metrics.podSecurityPolicies.enabled` 	| Enable/disable PodSecurityPolicy and associated Role/Rolebinding creation | `false`
+
 
 ### Deprecated
 
@@ -428,11 +485,19 @@ lifecycle:
           curl -XPUT "$ES_URL/_template/$TEMPLATE_NAME" -H 'Content-Type: application/json' -d'{"index_patterns":['\""$INDEX_PATTERN"\"'],"settings":{"number_of_shards":'$SHARD_COUNT',"number_of_replicas":'$REPLICA_COUNT'}}'
 ```
 
+## Notes
 
-## Contributing
+### Rolling restart procedure
+1. Stop indexing new data if possible
+2. Disable shard allocation - to avoid the new shard allocation for the cluster to avoid shard rebalance. (cluster.routing.allocation.enable: none)
+3. Shutdown one node
+4. Perform the maintenance of the node, restart and confirm it joins the cluster.
+5. Re-enable shard allocation  (cluster.routing.allocation.enable: all)
+6. Wait for the cluster to return to green status
+7. Repeat steps 2-6 for all other nodes
+Resume indexing new data
 
-Please check [CONTRIBUTING.md][] before any contribution or for any questions
-about our development and testing process.
+
 
 
 [#63]: https://github.com/elastic/helm-charts/issues/63
@@ -443,6 +508,7 @@ about our development and testing process.
 [alternate scheduler]: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/#specify-schedulers-for-pods
 [annotations]: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 [anti-affinity]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+[affinity]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 [cluster.name]: https://www.elastic.co/guide/en/elasticsearch/reference/7.9/cluster.name.html
 [clustering and node discovery]: https://github.com/elastic/helm-charts/tree/7.9/elasticsearch/README.md#clustering-and-node-discovery
 [config example]: https://github.com/elastic/helm-charts/tree/7.9/elasticsearch/examples/config/values.yaml
@@ -507,5 +573,5 @@ about our development and testing process.
 [tolerations]: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 [transport port configuration]: https://www.elastic.co/guide/en/elasticsearch/reference/7.9/modules-transport.html#_transport_settings
 [updateStrategy]: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
-[values.yaml]: https://github.com/elastic/helm-charts/tree/7.9/elasticsearch/values.yaml
+[values.yaml]: https://ssd-git.juniper.net/atom/atom/-/blob/master/third_party/helm/charts/elasticsearch/values.yaml
 [volumeClaimTemplate for statefulsets]: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#stable-storage
