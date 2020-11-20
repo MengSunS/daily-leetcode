@@ -22,7 +22,42 @@ class Solution:
         
         return memo[(s1, s2)]
             
+#------在上面基础上，加了个hashmap,并没变好，还是弱鸡的beat 5%------
+
+class Solution:
+    def minimumDeleteSum(self, s1: str, s2: str) -> int:
         
+        self.cache_s1= {'': 0}
+        for i in range(1, len(s1)+1):
+            self.cache_s1[s1[:i]]= self.cache_s1[s1[:i-1]]+ ord(s1[i-1])
+        
+        self.cache_s2= {'': 0}
+        for i in range(1, len(s2)+1):
+            self.cache_s2[s2[:i]]= self.cache_s2[s2[:i-1]]+ ord(s2[i-1])
+             
+        return self.dfs(s1, s2, {})
+    
+    def dfs(self, s1, s2, memo):
+        if (s1, s2) in memo:
+            return memo[(s1, s2)]
+        if not s1 and not s2:
+            return 0
+        elif not s1:     
+            memo[(s1, s2)]= self.cache_s2[s2]
+        elif not s2:
+            memo[(s1, s2)]= self.cache_s1[s1]
+        else:
+            
+            if s1[-1]==s2[-1]:
+                ans= self.dfs(s1[:-1], s2[:-1], memo)
+            else:
+                ans= min(self.dfs(s1[:-1], s2, memo)+ ord(s1[-1]), self.dfs(s1, s2[:-1], memo)+ ord(s2[-1]), self.dfs(s1[:-1], s2[:-1], memo)+ ord(s1[-1])+ ord(s2[-1]))
+            memo[(s1, s2)]= ans
+        
+        return memo[(s1, s2)]
+            
+        
+                
 #------------Method 2: DP--------------
 class Solution:
     def minimumDeleteSum(self, s1: str, s2: str) -> int:
