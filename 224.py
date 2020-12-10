@@ -1,37 +1,35 @@
 # Method 1: stack+ recursive template
-
 class Solution:
     def __init__(self):
         self.i= -1
-    
+        
     def calculate(self, s: str) -> int:
-        stack, num, sign= [], 0, 1
-      
+        stack, num, operator= [], 0, '+'
+        
         while self.i< len(s)-1:
             self.i+= 1
-            char= s[self.i]
-            
-            if char.isdigit():
-                num= num*10+ int(char)
-            
-            if char== '(':  #这个if一定要在下个if前面，（）里算的num才会被放到stack里
+            c= s[self.i]
+            if c.isdigit():
+                num= num*10+ int(c)
+            if c== '(':
                 num= self.calculate(s)
-              
-            if self.i==len(s)-1 or char in {'+', '-', ')'}:
-                stack.append(sign*num)
-                if char=='+':
-                    sign= 1
-                elif char=='-':
-                    sign= -1
+            if self.i== len(s)-1 or c in {'+', '-', ')'}:
+                if operator=='+':
+                    stack.append(num)
+                else:
+                    stack.append(-num)
                 num= 0
-
-            if char==')':
+                operator= c
+            if c==')':
                 break
-        ans= 0
-        while stack:
-            ans+= stack.pop()
-        return ans
+        
+        return sum(stack[:])
             
+                
+                
+        
+        
+                   
         
 # Method 2: stack 
 
