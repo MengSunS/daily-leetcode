@@ -1,3 +1,7 @@
+# 思路：state表示uoiea对应是odd(1) 或者even(0)，如果同一state出现两次，表示这中间是个合法的，因为出现又消失抵消了。
+# 抵消是用XOR bitmask flip的
+
+
 class Solution:
     def findTheLongestSubstring(self, s: str) -> int:
         idx= {0: -1}
