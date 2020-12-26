@@ -1,3 +1,5 @@
+# https://www.youtube.com/watch?v=AZZ18B2Spac
+
 class Solution:
     def countOfAtoms(self, formula: str) -> str:
         stack= []
