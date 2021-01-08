@@ -1,3 +1,8 @@
+# graph: {groupdID: [group members]}, group members排序， groupIDs排序，排序用另外两个对应的graph实现，graph1: {item: [nxt items]}, graph2: {groupId: [nxt groupIds]}.两个graph1 & graph2分别通过组内，group[i]!= group[j], j为beforeItems[i]对应的list循环；以及group[i]== group[j]代表不同组时，graph2[group[j]].append(group[i])来实现。
+
+
+
+
 class Solution:
     def sortItems(self, n: int, m: int, group: List[int], beforeItems: List[List[int]]) -> List[int]:
         groupIdNext= m
