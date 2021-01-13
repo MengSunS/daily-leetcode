@@ -21,4 +21,4 @@ class Solution:
                 seen.add((nxt_x, nxt_y))
         return -1
             
-        
+##imagine一个点开始，neighbors水平线低的都在最前面，继续往复浸染 不管高的矮的neighbors，直到遇到更高的水平线瞬间拔高，以此继续        
