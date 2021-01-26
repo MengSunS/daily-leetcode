@@ -6,10 +6,7 @@ class Solution:
         tmp= []
         visited= set()
         dir= [(0, 1),(0, -1),(1, 0),(-1, 0)]
-        self.flow(grid, 0, 0, visited, tmp, m, n)
-        
-        for p in tmp: 
-            q.append(p)
+        self.flow(grid, 0, 0, visited, q, m, n)
         
         step= 0
         while q:
@@ -23,19 +20,17 @@ class Solution:
                         continue
                     if (nx, ny) in visited: 
                         continue
-                    tmp= []
-                    self.flow(grid, nx, ny, visited, tmp, m, n)
-                    for p in tmp: 
-                        q.append(p)
+                    self.flow(grid, nx, ny, visited, q, m, n)
+                    
             step+= 1
         
-    def flow(self, grid, x, y, visited, tmp, m, n):
+    def flow(self, grid, x, y, visited, q, m, n):
         
         if (x, y) in visited: return 
         if x>= m or x< 0 or y>= n or y< 0: return 
         
         visited.add((x, y))
-        tmp.append((x, y))
+        q.append((x, y))
         if grid[x][y]== 1:
             y+= 1
         elif grid[x][y]== 2:
@@ -44,7 +39,7 @@ class Solution:
             x+= 1
         else:
             x-= 1
-        self.flow(grid, x, y, visited, tmp, m, n)
+        self.flow(grid, x, y, visited, q, m, n)
         
                     
             
