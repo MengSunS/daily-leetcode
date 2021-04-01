@@ -1,25 +1,20 @@
 class Solution:
     def splitArray(self, nums: List[int], m: int) -> int:
-        def check(nums, target, n):
-            curSum, cnt = 0, 1
-            for num in nums:
-                curSum += num
-                if curSum > target:
-                    curSum = num
-                    cnt += 1
-                    if cnt > n:
-                        return False
-            return True
-        
         l, r = max(nums), sum(nums)
         if m == 1:
             return r
         while l < r:
             mid = l + (r - l) // 2
-            if check(nums, mid, m):
-                r = mid 
-            else:
+            cnt, curSum = 1, 0
+            for num in nums:
+                if curSum + num > mid:
+                    cnt += 1
+                    curSum = 0
+                curSum += num
+            if cnt > m:
                 l = mid + 1
+            else:
+                r = mid
         return l
         
             
