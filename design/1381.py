@@ -1,3 +1,5 @@
+#Leet215 NB, O(1) instead of O(k)
+
 class CustomStack:
 
     def __init__(self, maxSize: int):
