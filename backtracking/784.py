@@ -1,18 +1,49 @@
+# Method 1: dfs
+
+
 class Solution:
     def letterCasePermutation(self, S: str) -> List[str]:
-        def dfs(startIndex, path):
-            res.append(path)
-            if startIndex>= len(S):
-                return
-            
-            for i in range(startIndex, len(path)):
-                if path[i].isdigit():
-                    continue
-                    
-                path= path[:i]+ path[i].swapcase()+ path[i+1:]
-                dfs(i+ 1, path)
-                path= path[:i]+ path[i].swapcase()+ path[i+1:]
+        def dfs(pos, path):
+            if pos == n:
+                res.append(''.join(path[:]))
+                return 
+            if S[pos].isalpha():
+                dfs(pos + 1, path + [S[pos].lower()])
+                dfs(pos + 1, path + [S[pos].upper()])
+            else:
+                dfs(pos + 1, path + [S[pos]])
                 
-        res= []
-        dfs(0, S)
+        
+        res = []
+        n = len(S)
+        dfs(0, [])
         return res
+
+# Method 2:  iterator
+
+class Solution:
+    def letterCasePermutation(self, S: str) -> List[str]:
+        def dfs(pos, path):
+            if pos == n:
+                res.append(''.join(path[:]))
+                return 
+            if S[pos].isalpha():
+                dfs(pos + 1, path + [S[pos].lower()])
+                dfs(pos + 1, path + [S[pos].upper()])
+            else:
+                dfs(pos + 1, path + [S[pos]])
+                
+        
+        res = []
+        n = len(S)
+        dfs(0, [])
+        return res
+
+# Method 3: lee215 two liner
+
+class Solution:
+    def letterCasePermutation(self, S):
+        L = [set([i.lower(), i.upper()]) for i in S]
+        return map(''.join, itertools.product(*L))
+
+
