@@ -14,8 +14,7 @@ class Solution:
             right = helper(root.right)
             
             self.maxi = max(self.maxi, left + right + root.val)
-            return max(max(left, right) + root.val, 0)
-            
+            return max(max(left, right) + root.val, 0) #向上返回的永远大于等于0，在leaf点开始压制的            
         helper(root)
         return self.maxi
             
