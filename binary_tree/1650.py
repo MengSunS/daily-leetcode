@@ -11,17 +11,26 @@ class Solution:
 
 #Method 2:
 
-class Solution:
+class Solution2:
     def lowestCommonAncestor(self, p: 'Node', q: 'Node') -> 'Node':
-        visited= set()
-        visited.add(p)
-        while p.parent:
-            p= p.parent
-            visited.add(p)
-        if q in visited:
-            return q
-        while q.parent:
-            if q.parent in visited:
-                return q.parent
-            q= q.parent
+        seen = set()
+        while p:
+            seen.add(p)
+            p = p.parent
+        while q:
+            if q in seen:
+                return q
+            q = q.parent
+
+# Method 3: recursion
+
+class Solution3:
+    def lowestCommonAncestor(self, p: 'Node', q: 'Node') -> 'Node':
+        seen = set()
+        def traverse_up(node):
+            if not node or node in seen:
+                return node
+            seen.add(node)
+            return traverse_up(node.parent)
         
+        return traverse_up(p) or traverse_up(q)        
