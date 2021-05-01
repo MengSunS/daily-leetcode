@@ -14,7 +14,7 @@ class Solution:
             right = helper(root.right)
             
             self.maxi = max(self.maxi, left + right + root.val)
-            return max(max(left, right, 0) + root.val, 0)
+            return max(max(left, right) + root.val, 0)
             
         helper(root)
         return self.maxi
