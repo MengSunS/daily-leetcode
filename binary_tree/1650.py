@@ -1,4 +1,5 @@
-# Method 1: same to lc 160. Reason why it works: https://stackoverflow.com/questions/1594061/check-if-two-linked-lists-merge-if-so-where
+# Method 1: same to lc 160. Reason why it works: count the number of nodes traveled from head1-> tail1 -> head2 -> intersection point and head2 -> tail2-> head1 -> intersection point.
+https://stackoverflow.com/questions/1594061/check-if-two-linked-lists-merge-if-so-where
 
 class Solution:
     def lowestCommonAncestor(self, p: 'Node', q: 'Node') -> 'Node':
