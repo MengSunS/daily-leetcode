@@ -1,4 +1,6 @@
-# Method 1: same to lc 160. Reason why it works: count the number of nodes traveled from head1-> tail1 -> head2 -> intersection point and head2 -> tail2-> head1 -> intersection point.
+# Method 1: same to lc 160. 不同点是这道题if p1也可以if p1.parent也可以，p1时是走最上面的根节点再往上的那个None,也可以不走，不影响长度相等的条件。而160那道题必须走最后一个点的下一个None,因为有可能不相交，而这道题LCA一定有答案。
+
+ Reason why it works: count the number of nodes traveled from head1-> tail1 -> head2 -> intersection point and head2 -> tail2-> head1 -> intersection point.
 https://stackoverflow.com/questions/1594061/check-if-two-linked-lists-merge-if-so-where
 
 class Solution:
