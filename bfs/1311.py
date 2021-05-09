@@ -1,3 +1,38 @@
+
+# discussion 区做法，因为指定levels,那么指定了batch循环次数
+
+class Solution:
+    def watchedVideosByFriends(self, watchedVideos: List[List[str]], friends: List[List[int]], id: int, level: int) -> List[str]:
+        bfs, seen = {id}, {id}
+        for _ in range(level):
+            bfs = {j for i in bfs for j in friends[i] if j not in seen}
+            seen |= bfs
+        
+        videos = Counter([v for j in bfs for v in watchedVideos[j]])
+        return sorted(videos.keys(), key = lambda x: (videos[x], x))
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# previous 
 class Solution:
     def watchedVideosByFriends(self, watchedVideos: List[List[str]], friends: List[List[int]], id: int, level: int) -> List[str]:
         q= deque([id])
