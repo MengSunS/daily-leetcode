@@ -1,3 +1,31 @@
+class Solution:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+        bq, eq = {beginWord}, {endWord}
+        n = len(endWord)
+        wordSet = set(wordList)
+        if endWord not in wordSet: return 0
+        wordSet.remove(endWord)
+        steps = 0
+        while bq:
+            steps += 1
+            nq = set()
+            for word in bq:
+                for nxtWord in [word[:i]+char+word[i+1:] for i in range(n) for char in string.ascii_lowercase]:
+                    if nxtWord in eq:
+                        return steps + 1
+                    if nxtWord in wordSet:
+                        nq.add(nxtWord)
+                        wordSet.remove(nxtWord)
+
+            bq = nq
+            if len(bq) > len(eq):
+                bq, eq = eq, bq
+        return 0
+
+
+
+
+
 # Method 1: birdirectional bfs
 
 
