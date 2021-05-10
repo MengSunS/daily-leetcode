@@ -1,3 +1,24 @@
+# actually dp, dp + decreasing  mono stack to save sliding max(...K)  
+
+class Solution:
+    def maxResult(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        score = nums[0]
+        dq = deque([(0, score)])
+        
+        for i in range(1, n):
+            if dq[0][0] == i - k -1:
+                dq.popleft()
+            score = nums[i] + dq[0][1]
+            while dq and score >= dq[-1][1]:
+                dq.pop()
+            dq.append((i, score))
+        return score
+        
+
+
+
+# with dp array, more straightforward
 class Solution:
     def maxResult(self, nums: List[int], k: int) -> int:
         n = len(nums)
