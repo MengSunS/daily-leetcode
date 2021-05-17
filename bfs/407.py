@@ -1,32 +1,27 @@
+# 从最矮的开始往里面摸，当前高度小于边上的能存水h-cur，继续摸，边界h不变。
+# 假设到一个更高的停了，再pop第二矮的开始摸，若一个点从第一次和第二次均能摸到，
+# 会不会该点能存的水其实比第一次多呢？不会，因为联通后会发现取决于最矮的边界
+# 而prioty queue就是从矮到高。
+
+
+
 class Solution:
     def trapRainWater(self, heightMap: List[List[int]]) -> int:
-        m, n= len(heightMap), len(heightMap[0])
-        directions= {(0,1),(0,-1),(1,0),(-1,0)}
-        if m==0: return 0
-        hp= []
-        seen= set()
+        pq = []
+        m, n = len(heightMap), len(heightMap[0])
         for i in range(m):
             for j in range(n):
-                if i==0 or i==m-1 or j==0 or j==n-1:  
-                    if (i,j) not in seen:
-                        heapq.heappush(hp, (heightMap[i][j], i, j))
-                        seen.add((i,j))
-
-        res= 0
-        while hp:
-            h, i, j= heapq.heappop(hp)
-            for di, dj in directions:
-                ni, nj= i+di, j+dj
-                if ni>=m or ni<0 or nj>=n or nj<0:
-                    continue
-                if (ni, nj) in seen:
-                    continue
-                if  heightMap[ni][nj]<= h: 
-                    seen.add((ni, nj))
-                    res+= h- heightMap[ni][nj]
-                    heapq.heappush(hp, (h, ni, nj))
-                elif heightMap[ni][nj]> h: 
-                    seen.add((ni, nj))
-                    heapq.heappush(hp, (heightMap[ni][nj], ni, nj))          
+                if i in {0, m -1} or j in {0, n - 1}:
+                    heapq.heappush(pq, (heightMap[i][j], i, j))
+                    heightMap[i][j] = -1
+        
+        res = 0
+        while pq:
+            h, i, j = heapq.heappop(pq)
+            for ni, nj in (i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1):
+                if m - 1 > ni > 0 < nj < n - 1 and heightMap[ni][nj] != -1:
+                    res += max(h - heightMap[ni][nj], 0)
+                    heapq.heappush(pq, (max(h, heightMap[ni][nj]), ni, nj))
+                    heightMap[ni][nj] = -1
         return res
-                        
+        
