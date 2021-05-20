@@ -1,4 +1,4 @@
-# stack里放open brackets index. string is imutable, convert into list
+# stack里放unpaired open brackets index. string is imutable, convert into list
 class Solution:
     def minRemoveToMakeValid(self, s: str) -> str:
         stack = []
