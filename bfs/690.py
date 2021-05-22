@@ -1,3 +1,35 @@
+# 第二遍做：recursion
+
+"""
+# Definition for Employee.
+class Employee:
+    def __init__(self, id: int, importance: int, subordinates: List[int]):
+        self.id = id
+        self.importance = importance
+        self.subordinates = subordinates
+"""
+
+class Solution:
+    def getImportance(self, employees: List['Employee'], id: int) -> int:
+        emps = {e.id: e for e in employees}
+        def dfs(id):
+            return emps[id].importance + sum(dfs(sub_id) for sub_id in emps[id].subordinates) # sum() without [], it becomes a generator taking O(1) space in this step
+            
+        return dfs(id)
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
 # Method 1: bfs
 
 
