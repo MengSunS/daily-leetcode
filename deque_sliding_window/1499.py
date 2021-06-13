@@ -14,7 +14,19 @@ class Solution:
             deque.append([y - x, x])
         return res
         
-        
+# lee215 prority queue 
+
+class Solution:
+    def findMaxValueOfEquation(self, points: List[List[int]], k: int) -> int:
+        pq = []
+        res = -float('inf')
+        for x, y in points:
+            while pq and pq[0][1] + k < x:
+                heapq.heappop(pq)
+            if pq:
+                res = max(res, -pq[0][0] + x + y)
+            heapq.heappush(pq, [x - y, x])
+        return res        
         
         
        
