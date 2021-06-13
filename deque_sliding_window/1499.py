@@ -1,3 +1,34 @@
+# lee215
+
+class Solution:
+    def findMaxValueOfEquation(self, points: List[List[int]], k: int) -> int:
+        res = -float('inf')
+        deque = collections.deque()
+        for x, y in points:
+            while deque and deque[0][1] + k < x:
+                deque.popleft()
+            if deque:
+                res = max(res, x + y + deque[0][0])
+            while deque and deque[-1][0] <= y - x:
+                deque.pop()
+            deque.append([y - x, x])
+        return res
+        
+        
+        
+        
+       
+        
+# max(yi - xi) + (xj + yj)  loop j 
+# for one j:    xj - xi <= k
+    
+        
+        
+
+
+
+
+
 class Solution:
     def findMaxValueOfEquation(self, points: List[List[int]], k: int) -> int:
         dq= collections.deque([])
