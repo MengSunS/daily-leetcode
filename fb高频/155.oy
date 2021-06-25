@@ -1,11 +1,15 @@
 # One stack. 存tuple [x, y], y是目前为止最小的, y轴也是递减的
+# deque 用doubly linked list实现，不需要连续memmory space, however geting ramdon indexing takes O(n) time, 
+# but stack does not call random indexing, so deque is better than list in this question. List uses continous
+# memory allocation. 
+
 class MinStack:
 
     def __init__(self):
         """
         initialize your data structure here.
         """
-        self.stack = []
+        self.stack = collections.deque() 
         
         
     def push(self, val: int) -> None:
