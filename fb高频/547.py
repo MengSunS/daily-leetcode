@@ -25,4 +25,42 @@ class Solution:
                 res += 1
         return res
                 
-            
+
+
+
+
+class UnionFind:
+    def __init__(self, n):
+        self.parent = {i : i for i in range(n)}
+        self.res = n
+    
+    def union(self, x, y):
+        fx = self.find(x)
+        fy = self.find(y)
+        
+        if fx != fy:
+            self.parent[fx] = fy
+            self.res -= 1
+    
+    def find(self, x):
+        i = x
+        while self.parent[i] != i:
+            i = self.parent[i] 
+        # i is the root, now do compress
+        while x != i:
+            tmp = self.parent[x]
+            self.parent[x] = i
+            x = tmp
+        return i
+        
+
+class Solution:
+    def findCircleNum(self, isConnected: List[List[int]]) -> int:
+        n = len(isConnected)
+        X = UnionFind(n)
+        for i in range(n):
+            for j in range(n):
+                if isConnected[i][j]:
+                    X.union(i, j)
+        return X.res
+                
