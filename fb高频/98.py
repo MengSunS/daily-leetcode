@@ -21,7 +21,26 @@ class Solution:
         prev = None
         return in_order(root)
     
-
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        def inOrder(node):
+            nonlocal prev, res
+            if res != None:
+                return 
+            if not node:
+                return 
+            inOrder(node.left)
+            if node.val <= prev:
+                res = False
+            prev = node.val
+            inOrder(node.right)
+            
+        prev = float('-inf')
+        res = None
+        inOrder(root)
+        return res if res != None else True
+            
+        
 # method 2: 分左右，左右分别的上下边界，root.left时root.val为上边界，反之为下边界
 
 # Definition for a binary tree node.
