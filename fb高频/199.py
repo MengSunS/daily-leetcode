@@ -22,4 +22,20 @@ class Solution:
             
             
             
-        
+# dfs almost preorder,right first then left, dict only records first time encounters this level H. Inorder, posorder travseve 都可以，不过顺序是从底网上
+time O(N), space O(h), O(N) is till travser all points. 
+
+
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        ans = {}
+        def dfs(root, h):
+            if not root:
+                return 
+            if h not in ans:
+                ans[h] = root.val
+            dfs(root.right, h + 1)
+            dfs(root.left, h + 1)
+            
+        dfs(root, 0)
+        return [ans[i] for i in ans.keys()]        
