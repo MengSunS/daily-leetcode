@@ -21,4 +21,25 @@ class Solution:
         return dp[-1][-1]
                 
         
+class Solution:
+    def minDistance(self, s: str, t: str) -> int:
+        s = '#' + s
+        t = '#' + t
+        def dfs(i, j, memo):
+            if (i, j) in memo:
+                return memo[(i, j)]
+            if i == 0:
+                return j
+            if j == 0:
+                return i
+            
+            memo[(i, j)] = float('inf')
+            if s[i] == t[j]:
+                memo[(i, j)] = min(memo[(i, j)], dfs(i - 1, j - 1, memo))
+            else:
+                memo[(i, j)] = min(memo[(i, j)], min(dfs(i - 1, j - 1, memo), dfs(i, j - 1, memo), dfs(i - 1, j, memo)) + 1)
+            return memo[(i, j)]
         
+        return dfs(len(s) - 1, len(t) - 1, {})
+                
+                    
