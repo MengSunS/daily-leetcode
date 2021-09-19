@@ -14,4 +14,16 @@ class Solution:
         
             
             
-        
+# heapq, 放结束时间
+
+class Solution:
+    def minMeetingRooms(self, intervals: List[List[int]]) -> int:
+        pq = []
+        intervals.sort(key=lambda x: x[0])
+        for s, e in intervals:
+            if pq and pq[0] <= s:
+                heapq.heapreplace(pq, e)
+            else:
+                heapq.heappush(pq, e)
+        return len(pq)
+                
