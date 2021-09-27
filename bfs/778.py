@@ -1,5 +1,28 @@
 class Solution:
     def swimInWater(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        pq = [(grid[0][0], 0, 0)]
+        seen = set()
+        t = 0
+        while pq:
+            h, x, y = heapq.heappop(pq) # h是time=h时建筑有多高（下雨后）
+            if (x, y) in seen:
+                continue
+            seen.add((x, y))
+            if x == m -1 and y == n -1 :
+                return h
+            for dx, dy in (0, 1), (1, 0), (0, -1), (-1, 0):
+                nx, ny = x + dx, y + dy
+                if m > nx >= 0 <= ny < n:
+                    heapq.heappush(pq, (max(h, grid[nx][ny]), nx, ny))
+        return -1
+        
+
+
+
+
+class Solution:
+    def swimInWater(self, grid: List[List[int]]) -> int:
         m, n= len(grid), len(grid[0])
         dir= {(0, 1),(0, -1),(1, 0),(-1, 0)}
         hp= [(grid[0][0], 0, 0)]
