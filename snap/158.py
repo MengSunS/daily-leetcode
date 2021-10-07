@@ -40,3 +40,23 @@ class Solution:
                     break
                 q.extend(buf4[:num])
         return i
+
+# O(1) space for 157
+
+class Solution:
+    def read(self, buf, n):
+        """
+        :type buf: Destination buffer (List[str])
+        :type n: Number of characters to read (int)
+        :rtype: The number of actual characters read (int)
+        """
+        i = 0
+        while i < n:
+            buf4 = [''] * 4
+            num = read4(buf4)
+            if num == 0:
+                break
+            count = min(n - i, num)
+            buf[i:] = buf4[:count]
+            i += count
+        return i
