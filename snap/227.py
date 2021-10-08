@@ -1,3 +1,5 @@
+# lc 227
+
 class Solution:
     def calculate(self, s: str) -> int:
         stack, num, sign = [], 0, '+'
@@ -54,4 +56,28 @@ class Solution:
                         
                         
                     
-                
+# lc 224
+
+class Solution:
+    def calculate(self, s: str) -> int:
+        res, num, sign, stack = 0, 0, 1, []
+        for ch in s:
+            if ch.isdigit():
+                num = num * 10 + int(ch)
+            elif ch in ['+', '-']:
+                res += sign * num
+                num = 0
+                sign = 1 if ch == '+' else -1
+            elif ch == '(':
+                stack.append(res)
+                stack.append(sign)
+                res, sign = 0, 1
+            elif ch == ')':
+                res += num * sign
+                res *= stack.pop()
+                res += stack.pop()
+                num = 0
+            else:
+                continue
+        return res + sign * num
+                        
