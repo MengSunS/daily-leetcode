@@ -1,48 +1,47 @@
-class TrieNode:
+class Node:
     def __init__(self):
-        self.children = collections.defaultdict(TrieNode)
-        self.isWord = False
+        self.children = collections.defaultdict(Node)
+        self.word = None
+        
 class Trie:
     def __init__(self):
-        self.root = TrieNode()
+        self.root = Node()
     def insert(self, word):
         node = self.root
         for ch in word:
             node = node.children[ch]
-        node.isWord = True
-        
+        node.word = word
+
+
 class Solution:
     def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
-        self.res = []
+        def dfs(i, j, node):
+            if node.word:
+                res.append(node.word)
+                node.word = None
+                
+            if not m > i >= 0 <= j < n:
+                return False
+            if board[i][j] not in node.children:
+                return False
+            node = node.children[board[i][j]]
+            
+            tmp = board[i][j]
+            board[i][j] = '#'
+            for ni, nj in [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]:
+                dfs(ni, nj, node)
+            board[i][j] = tmp
+        
+  
+        
         m, n = len(board), len(board[0])
         trie = Trie()
         for word in words:
             trie.insert(word)
-        node = trie.root
+            
+        res = []
         for i in range(m):
             for j in range(n):
-                self.dfs(i, j, board, node, m, n, '')
-        return self.res
-
-    def dfs(self, i, j, board, node, m, n, path):
-        if node.isWord:
-            self.res.append(path)
-            node.isWord = False
-            # return #这里不能加return,dfs找路径前半段在trie里，append进去得继续这个这个路径往下找。 
-        
-        if i >= m or i < 0 or j >= n or j < 0:
-            return 
-        if board[i][j] not in node.children:
-            return 
-        node = node.children[board[i][j]]
-        tmp = board[i][j]
-        board[i][j] = '#'
-        for ni, nj in [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]:
-            self.dfs(ni, nj, board, node, m, n, path + tmp)
-        board[i][j] = tmp
-    
-    
-            
-            
-            
+                dfs(i, j, trie.root)
+        return res
         
